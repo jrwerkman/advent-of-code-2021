@@ -70,12 +70,14 @@ public class Day05HydrothermalVenture {
 
 	
 	public Day05HydrothermalVenture() {
-		getInput();
+		
 	}
 	
 	Diagram hydrothermalMap = new Diagram();
 	
 	public void start() {
+		getInput();
+		
 		System.out.println("Start test");
 		hydrothermalMap.createDiagram();
 		System.out.println("Created map");
@@ -224,6 +226,8 @@ public class Day05HydrothermalVenture {
 
 		public VentCoords(int x, int y) {
 			super(x, y);
+			
+//			System.out.println("x: " + x + " - y: " + y);
 			
 			id = (x << 16) + y;
 		}
