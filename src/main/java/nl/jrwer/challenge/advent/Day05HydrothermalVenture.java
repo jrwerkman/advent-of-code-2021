@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class Day05HydrothermalVenture {
 
@@ -94,7 +97,7 @@ public class Day05HydrothermalVenture {
 	
 	class Diagram {
 		protected List<LineSegment> lineSegments = new ArrayList<>();
-		protected List<VentCoords> map = new ArrayList<>();
+		protected Map<Integer, VentCoords> map = new HashMap<>();
 		
 		public void addLineSegment(String input) {
 			lineSegments.add(new LineSegment(input));
@@ -157,21 +160,17 @@ public class Day05HydrothermalVenture {
 		}
 		
 		protected void addToMap(VentCoords coords) {
-			for(VentCoords ventCoords : map) {
-				if(ventCoords.compare(coords)) {
-					ventCoords.weight++;
-					return;
-				}
-			}
-			
-			map.add(coords);
+			if(map.containsKey(coords.id))
+				map.get(coords.id).weight++;
+			else
+				map.put(coords.id, coords);
 		}
 		
 		public int overlaps() {
 			int totalOverlaps = 0;
 			
-			for(VentCoords ventCoords : map)
-				if(ventCoords.weight > 1)
+			for(Entry<Integer, VentCoords> entry : map.entrySet())
+				if(entry.getValue().weight > 1)
 					totalOverlaps++;
 			
 			return totalOverlaps;
@@ -221,9 +220,12 @@ public class Day05HydrothermalVenture {
 	
 	class VentCoords extends Coords {
 		int weight = 1;
+		int id;
 
 		public VentCoords(int x, int y) {
 			super(x, y);
+			
+			id = (x << 16) + y;
 		}
 	}
 	
