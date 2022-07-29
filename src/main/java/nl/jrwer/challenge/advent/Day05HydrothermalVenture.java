@@ -101,6 +101,9 @@ public class Day05HydrothermalVenture {
 		protected List<LineSegment> lineSegments = new ArrayList<>();
 		protected Map<Integer, VentCoords> map = new HashMap<>();
 		
+		
+		// could be refactored to directly convert to Map<Integer, Integer>
+		// where first int is coords and second is weight
 		public void addLineSegment(String input) {
 			lineSegments.add(new LineSegment(input));
 		}
