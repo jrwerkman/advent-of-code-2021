@@ -14,12 +14,9 @@ public class Part2 {
 		HeightMap map = new InputLoader("input-day-09.txt").getInput();
 
 		long start = System.currentTimeMillis();
-//		System.out.println(map);
 		System.out.println("The sum of the risk levels: " + map.multiplicationLargestBasins());
 		long end = System.currentTimeMillis();
 
 		System.out.println("Process took: " + (end - start) + " ms\n");
-		
-		// 523260 to low
 	}
 }
