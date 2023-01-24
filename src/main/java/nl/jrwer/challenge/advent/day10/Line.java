@@ -41,6 +41,7 @@ public class Line {
 	 * @return
 	 */
 	public int isCorrupted() {
+		index = 0;
 		LinkedList<Symbol> open = new LinkedList<>();
 		
 		while(hasNext()) {
@@ -50,13 +51,33 @@ public class Line {
 				Symbol last = open.removeLast();
 				
 				if(last.type() != next.type())
-					return next.points();
+					return next.corruptedPoints();
 			} else {
 				open.add(next);
 			}
 		}
 
 		return 0;
+	}
+	
+	public long repair() {
+		index = 0;
+		LinkedList<Symbol> open = new LinkedList<>();
+		while(hasNext()) {
+			Symbol next = next();
+
+			if(!next.isOpen())
+				open.removeLast();
+			else
+				open.add(next);
+		}
+		
+		long score = 0;
+		for(int i=open.size()-1; i>=0; i--) {
+			score = (score * 5) + open.get(i).autoCompletePoints();
+		}
+		
+		return score;
 	}
 	
 	public boolean isIncomplete() {
