@@ -4,16 +4,34 @@ public class OctopusGrid {
 	private int flashes = 0; 
 	private final Octopus[][] grid;
 	private final int width, height;
+	private final int amountOctopus;
 	
 	public OctopusGrid(Octopus[][] grid) {
 		this.grid = grid;
 		this.height = grid.length;
 		this.width = grid[0].length;
+		this.amountOctopus = this.height * this.width;
+	}
+	
+	public int simultaneousFlash() {
+	    int step = 0;
+	    
+	    while(flashes < amountOctopus) {
+	        flashes = 0;
+	        step++;
+	        
+	        simulateStep();
+	        nextStep();
+	    }
+	    
+	    return step;
 	}
 	
 	public int simulateSteps(int amount) {
-		for(int i=0; i<amount; i++)
+		for(int i=0; i<amount; i++) {
 			simulateStep();
+			nextStep();
+		}
 		
 		return flashes;
 	}
@@ -22,8 +40,6 @@ public class OctopusGrid {
 		for(int y=0; y<height; y++)
 			for(int x=0; x<width; x++)
 				energyUp(x, y);
-		
-		nextStep();
 	}
 	
 	private void energyUp(int x, int y) {
