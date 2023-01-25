@@ -21,6 +21,16 @@ public class Cave {
         return true;
     }
     
+    public boolean canVisit(Path p) {
+//        if(smallCave && p.visistedCaves.contains(this) && !p.visitedACaveTwice) {
+//            p.visitedACaveTwice = true;
+//            
+//            return true;
+//        }
+        
+        return !(smallCave && p.visistedCaves.contains(this));
+    }
+    
     @Override
     public int hashCode() {
         return Objects.hash(name);

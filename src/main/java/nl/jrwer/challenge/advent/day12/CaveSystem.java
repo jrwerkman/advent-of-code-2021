@@ -9,14 +9,21 @@ import java.util.Set;
 
 public class CaveSystem {
     private final List<Tunnel> tunnels;
+    
     private final Cave start = new Cave("start");
     private final Cave end = new Cave("end");
+    private final boolean visitSingleCaveTwice;
+    
+    private List<Path> paths = new ArrayList<>();
     
     public CaveSystem(List<Tunnel> paths) {
-        this.tunnels = paths;
+        this(paths, false);
     }
     
-    List<Path> paths = new ArrayList<>();
+    public CaveSystem(List<Tunnel> paths, boolean visitSingleCaveTwice) {
+        this.tunnels = paths;
+        this.visitSingleCaveTwice = visitSingleCaveTwice;
+    }
     
     public int numberOfPaths() {
         Queue<Path> q = new ArrayDeque<>();
@@ -30,13 +37,20 @@ public class CaveSystem {
             } else {
                 Set<Cave> next = getNextCaves(p.currentCave);
                 
-                for(Cave c : next)
-                    if(!(c.smallCave && p.visistedCaves.contains(c)))
-                        q.add(new Path(c, p.visistedCaves));
+                for(Cave c : next) {
+                    if(canVisit(p, c))
+                        q.add(new Path(c, p));
+                    else if(visitSingleCaveTwice && !p.visitedACaveTwice && !c.equals(start))
+                        q.add(new Path(c, p, true));
+                }
             }
         }
         
         return paths.size();
+    }
+    
+    private boolean canVisit(Path p, Cave c) {
+        return !c.equals(start) && c.canVisit(p);
     }
     
     public Set<Cave> getNextCaves(Cave cave) {

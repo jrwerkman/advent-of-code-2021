@@ -4,17 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Path {
-    Cave currentCave;
-    List<Cave> visistedCaves = new ArrayList<>();
+    final Cave currentCave;
+    final List<Cave> visistedCaves = new ArrayList<>();
+    boolean visitedACaveTwice;
 
     public Path(Cave currentCave) {
         this.currentCave = currentCave;
         this.visistedCaves.add(currentCave);
+        this.visitedACaveTwice = false;
     }
     
-    public Path(Cave currentCave,  List<Cave> visistedCaves) {
+    public Path(Cave currentCave, Path path) {
         this.currentCave = currentCave;
-        this.visistedCaves.addAll(visistedCaves);
+        this.visitedACaveTwice = path.visitedACaveTwice;
+        
+        this.visistedCaves.addAll(path.visistedCaves);
+        this.visistedCaves.add(currentCave);
+    }
+    
+    public Path(Cave currentCave, Path path, boolean visitedACaveTwice) {
+        this.currentCave = currentCave;
+        this.visitedACaveTwice = visitedACaveTwice;
+        
+        this.visistedCaves.addAll(path.visistedCaves);
         this.visistedCaves.add(currentCave);
     }
     
