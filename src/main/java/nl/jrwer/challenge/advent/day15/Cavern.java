@@ -25,21 +25,19 @@ public class Cavern {
 	
 	public int findSafestRoute() {
 		this.bestState = new State(start, Integer.MAX_VALUE, 0);
-		State startState = new State(start, get(0, 0), 0);
+		State startState = new State(start, 0, 0);
 		Queue<State> q = new ArrayDeque<State>();
 		Set<State> visited = new HashSet<>();
 		
 		visited.add(startState);
 		q.add(startState);
 		
-		System.out.println(finish);
-		
 		while(!q.isEmpty()) {
 			State nextState = q.poll();
-
-			if(visited.contains(nextState))
-				continue;
 			
+			if(nextState.steps >= bestState.steps && nextState.risk > bestState.risk)
+				continue;
+
 			if(nextState.currentCoord.equals(finish) && bestState.risk > nextState.risk)
 				bestState = nextState;
 			
@@ -52,8 +50,10 @@ public class Cavern {
 								nextState.risk + get(c), 
 								nextState.steps + 1); 
 						
-						q.add(s);
-						visited.add(s);
+						if(!visited.contains(s)) {
+							q.add(s);
+							visited.add(s);
+						}
 					}
 				}
 			}

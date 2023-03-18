@@ -11,7 +11,7 @@ public class Part1 {
 	}
 	
 	public void start() {
-		Cavern c = new InputLoader("input-day-15-example.txt").getInput();
+		Cavern c = new InputLoader("input-day-15.txt").getInput();
 
 		long start = System.currentTimeMillis();
 		System.out.println(c.findSafestRoute());
