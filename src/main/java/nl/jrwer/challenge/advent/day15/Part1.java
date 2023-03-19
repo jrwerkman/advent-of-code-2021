@@ -18,5 +18,6 @@ public class Part1 {
 		long end = System.currentTimeMillis();
 
 		System.out.println("Process took: " + (end - start) + " ms\n");
+		// 421 is to high
 	}
 }
