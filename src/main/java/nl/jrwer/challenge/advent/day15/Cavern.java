@@ -1,6 +1,7 @@
 package nl.jrwer.challenge.advent.day15;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
@@ -10,22 +11,16 @@ public class Cavern {
 	final int[][] grid;
 	final int width, height;
 	
-	final Coord start, finish;
-	State bestState;
-	
 	public Cavern(int[][] grid) {
 		this.grid = grid;
 		
 		this.height = grid.length;
 		this.width = grid[0].length;
-		
-		this.start = new Coord(0,0);
-		this.finish = new Coord(width - 1, height - 1);
 	}
 	
 	public int findSafestRoute() {
-		this.bestState = new State(start, Integer.MAX_VALUE, 0);
-		State startState = new State(start, 0, 0);
+		State bestState = new State();
+		State startState = new State(0, 0, 0);
 		Queue<State> q = new ArrayDeque<State>();
 		Set<State> visited = new HashSet<>();
 		
@@ -35,27 +30,19 @@ public class Cavern {
 		while(!q.isEmpty()) {
 			State nextState = q.poll();
 			
-			if(nextState.steps >= bestState.steps && nextState.risk > bestState.risk)
+			if(nextState.risk > bestState.risk)
 				continue;
 
-			if(nextState.currentCoord.equals(finish) && bestState.risk > nextState.risk)
+			if(nextState.isCoord(width - 1, height - 1) && bestState.risk > nextState.risk) {
 				bestState = nextState;
-			
-			if(!nextState.currentCoord.equals(finish)) {
-				List<Coord> next = next(nextState.currentCoord);
+			} else {
+				List<State> next = next(nextState);
 
-				for(Coord c : next) {
-					if(inBounds(c)) {
-						State s = new State(c, 
-								nextState.risk + get(c), 
-								nextState.steps + 1); 
-						
-						if(!visited.contains(s)) {
-							q.add(s);
-							visited.add(s);
-						}
+				for(State s : next) 
+					if(!visited.contains(s)) {
+						q.add(s);
+						visited.add(s);
 					}
-				}
 			}
 		}
 		
@@ -63,23 +50,21 @@ public class Cavern {
 		return bestState.risk;
 	}
 	
-	private List<Coord> next(Coord currentCoord) {
-		int cX = currentCoord.x;
-		int cY = currentCoord.y;
+	private List<State> next(State s) {
+		List<State> states = new ArrayList<>();
+		int cX = s.x;
+		int cY = s.y;
 
-		return List.of(
-				new Coord(cX + 1, cY),
-				new Coord(cX - 1, cY),
-				new Coord(cX, cY + 1),
-				new Coord(cX, cY - 1));
+		if(inBounds(cX + 1, cY)) states.add(new State(cX + 1, cY, s.risk + get(cX + 1, cY)));
+		if(inBounds(cX - 1, cY)) states.add(new State(cX - 1, cY, s.risk + get(cX - 1, cY)));
+		if(inBounds(cX, cY + 1)) states.add(new State(cX, cY + 1, s.risk + get(cX, cY + 1)));
+		if(inBounds(cX, cY - 1)) states.add(new State(cX, cY - 1, s.risk + get(cX, cY - 1)));
+		
+		return states;
 	}
 	
-	private boolean inBounds(Coord c) {
-		return c.x >= 0 && c.x < width && c.y >= 0 && c.y < height;
-	}
-	
-	private int get(Coord c) {
-		return get(c.x, c.y);
+	private boolean inBounds(int x, int y) {
+		return x >= 0 && x < width && y >= 0 && y < height;
 	}
 	
 	private int get(int x, int y) {
