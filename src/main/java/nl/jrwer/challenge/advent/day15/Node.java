@@ -1,7 +1,5 @@
 package nl.jrwer.challenge.advent.day15;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Node implements Comparable<Node> {
@@ -46,7 +44,8 @@ public class Node implements Comparable<Node> {
 		if(o instanceof Node) {
 			Node n = (Node) o;
 			
-			return n.x == x && n.y == y;
+			// if fCost of node is smaller, mark as not equal to remove it from te queue and add the shorter path
+			return n.x == x && n.y == y && n.fCost <= fCost; 
 		}
 		
 		return false;
@@ -54,6 +53,6 @@ public class Node implements Comparable<Node> {
 
 	@Override
 	public int compareTo(Node n) {
-		 return Integer.compare(this.fCost, n.fCost);
+		return Integer.compare(this.fCost, n.fCost);
 	}
 }
