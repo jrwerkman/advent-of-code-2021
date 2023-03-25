@@ -14,7 +14,8 @@ public class Part2 {
 		Decoder d = new InputLoader("input-day-16-example.txt").getInput();
 
 		long start = System.currentTimeMillis();
-		System.out.println(d.sumVersionNumbers());
+
+
 		long end = System.currentTimeMillis();
 
 		System.out.println("Process took: " + (end - start) + " ms\n");
