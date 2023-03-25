@@ -11,10 +11,10 @@ public class Part2 {
 	}
 	
 	public void start() {
-		Cavern c = new InputLoader("input-day-15-example.txt").getInput();
+		Cavern c = new InputLoaderPart2("input-day-15.txt").getInput();
 
 		long start = System.currentTimeMillis();
-		System.out.println(c);
+		System.out.println(c.aStar().gCost);
 		long end = System.currentTimeMillis();
 
 		System.out.println("Process took: " + (end - start) + " ms\n");
