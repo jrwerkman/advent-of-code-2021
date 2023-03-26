@@ -15,8 +15,7 @@ public class Part1 {
 
 		long start = System.currentTimeMillis();
 		d.decode();
-		System.out.println(d.parseSubpackets());
-		
+		System.out.println(d.getVersionSum());
 		long end = System.currentTimeMillis();
 
 		System.out.println("Process took: " + (end - start) + " ms\n");
