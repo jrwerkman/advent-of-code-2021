@@ -3,7 +3,7 @@ package nl.jrwer.challenge.advent.day16;
 public class LiteralPacket  extends Packet {
 
 	String binaryValue;
-	int value;
+	long value;
 	
 	protected LiteralPacket(String binarySequence, int index, int version, int typeId) {
 		super(binarySequence, index, version, typeId);
@@ -27,7 +27,7 @@ public class LiteralPacket  extends Packet {
 		}
 		
 		binaryValue = sb.toString();
-		value = Integer.parseInt(binaryValue, 2);
+		value = Long.parseLong(binaryValue, 2);
 	}
 
 	@Override

@@ -43,7 +43,19 @@ public class Decoder {
 	}
 	
 	public int getVersionSum() {
-		// TODO
-		return 0;
+		return getVersionSum(packet, 0);
+	}
+	
+	public int getVersionSum(Packet p, int sum) {
+		sum += p.version;
+		
+		if(p instanceof OperatorPacket) {
+			OperatorPacket op = (OperatorPacket) p;
+			
+			for(Packet sp : op.subpackets) 
+				sum = getVersionSum(sp, sum);
+		}
+		
+		return sum;
 	}
 }
