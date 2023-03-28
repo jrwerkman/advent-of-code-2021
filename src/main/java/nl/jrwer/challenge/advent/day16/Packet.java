@@ -23,6 +23,7 @@ public abstract class Packet {
 	
 	public abstract void decode();
 	public abstract int getLength();
+	public abstract long calculate();
 	
 	protected static int parse(String str, int index, int length) {
 		return Integer.parseInt(sub(str, index, length), 2);

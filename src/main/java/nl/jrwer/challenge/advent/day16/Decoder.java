@@ -17,6 +17,10 @@ public class Decoder {
 		return this;
 	}
 	
+	public long calculate() {
+		return packet.calculate();
+	}
+	
 	private String convert() {
 		StringBuilder sb = new StringBuilder();
 		

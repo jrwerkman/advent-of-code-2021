@@ -34,4 +34,9 @@ public class LiteralPacket  extends Packet {
 	public int getLength() {
 		return length;
 	}
+
+	@Override
+	public long calculate() {
+		return value;
+	}
 }
