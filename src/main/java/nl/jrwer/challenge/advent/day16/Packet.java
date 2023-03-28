@@ -16,7 +16,7 @@ public abstract class Packet {
 		this.typeId = typeId;
 		
 //		System.out.println("-----------------");
-		System.out.println(this.getClass().getSimpleName() + " - version: " + version);
+//		System.out.println(this.getClass().getSimpleName() + " - version: " + version);
 //		System.out.println(this.getClass().getSimpleName() + " - typeid : " + typeId);
 //		System.out.println(this.getClass().getSimpleName() + " - index  : " + index);
 	}
@@ -33,6 +33,7 @@ public abstract class Packet {
 	}
 
 	public static Packet createPacket(String binarySequence, int index) {
+//		System.out.println(index);
 		String versionStr = sub(binarySequence, index, 3);
 		String typeIdStr = sub(binarySequence, index + 3, 3);
 		

@@ -9,11 +9,12 @@ public class Decoder {
 	public Decoder(String hexSequence) {
 		this.hexSequence = hexSequence;
 		this.binarySequence = convert();
-//		System.out.println(binarySequence);
 	}
 	
-	public void decode() {
+	public Decoder decode() {
 		this.packet = Packet.createPacket(binarySequence, 0);
+		
+		return this;
 	}
 	
 	private String convert() {

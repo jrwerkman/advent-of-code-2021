@@ -22,8 +22,8 @@ public class OperatorPacket extends Packet {
 		else
 			decodeByNumber();
 		
-		for(Packet p : subpackets)
-			length += p.getLength();
+//		for(Packet p : subpackets)
+//			length += p.getLength();
 	}
 	
 	private void decodeByLength() {
@@ -56,8 +56,8 @@ public class OperatorPacket extends Packet {
 		int l = this.length;
 		
 		for(Packet p : subpackets)
-			l += p.length;
-		
+			l += p.getLength();
+//		System.out.println("getLength() " + l);
 		return l;
 	}
 
