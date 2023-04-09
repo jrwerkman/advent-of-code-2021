@@ -28,6 +28,10 @@ public class VelocityCalculator {
 //			System.out.println(v);
 	}
 	
+	public int possibleVelocities() {
+		return velocityCandidates.size();
+	}
+	
 	public int highestY() {
 		int highestY = Integer.MIN_VALUE;
 		
@@ -110,7 +114,7 @@ public class VelocityCalculator {
 	private Set<Velocity> getVelocityCandidates(Integer xVel) {
 		Set<Velocity> candidates = new HashSet<>();
 		
-		for(int yVel=0; yVel<Math.abs(target.y1); yVel++) {
+		for(int yVel=target.y1; yVel<Math.abs(target.y1); yVel++) {
 			Velocity vel = getVelocityCandidate(xVel, yVel);
 			
 			if(vel != null)
