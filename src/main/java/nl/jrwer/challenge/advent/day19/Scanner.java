@@ -20,6 +20,16 @@ public class Scanner extends Coord {
 		return new BeaconMap(this);
 	}
 	
+	public void set(int x, int y, int z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	public int manhattanDistance(Scanner other) {
+		return Math.abs(x - other.x) + Math.abs(y - other.y) + Math.abs(z - other.z);
+	}	
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

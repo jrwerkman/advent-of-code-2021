@@ -1,6 +1,9 @@
 package nl.jrwer.challenge.advent.day19;
 
+import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 public class BeaconMap {
@@ -14,30 +17,42 @@ public class BeaconMap {
 		for(Beacon b : scanner.beacons)
 			beacons.add(b);
 	}
+	
+	public void combine(List<Scanner> scanners) {
+		Queue<BeaconMap> q = new ArrayDeque<>();
+		for(Scanner s : scanners)
+			q.add(s.getMap());
 
-	public boolean combine(BeaconMap other) {
-		System.out.println("Comparing: " + scanner.id + " with: " + other.scanner.id);
-		
+		while(!q.isEmpty()) {
+			BeaconMap current = q.poll();
+
+			// retry if nog match
+			if(!this.combine(current))
+				q.add(current);
+		}
+	}
+
+	public boolean combine(BeaconMap otherBeaconMap) {
 		for(Rotation r : Rotation.ROTATIONS) {
-			Set<Beacon> rotated = r.rotate(other.beacons);
+			Set<Beacon> rotated = r.rotate(otherBeaconMap.beacons);
 			
-			if(compare(rotated))
+			if(compare(otherBeaconMap, rotated))
 				return true;
 		}
 		
 		return false;
 	}
 	
-	private boolean compare(Set<Beacon> others) {
+	private boolean compare(BeaconMap otherBeaconMap, Set<Beacon> others) {
 		for(Beacon current : beacons)
 			for(Beacon other : others)
-				if(compare(current, other, others))
+				if(compare(otherBeaconMap, current, other, others))
 					return true;
 		
 		return false;
 	}
 	
-	private boolean compare(Beacon current, Beacon other, Set<Beacon> others) {
+	private boolean compare(BeaconMap otherBeaconMap, Beacon current, Beacon other, Set<Beacon> others) {
 		int overlapping = 0;
 		int dX = current.x - other.x;
 		int dY = current.y - other.y;
@@ -56,6 +71,7 @@ public class BeaconMap {
 				Beacon shifted = b.shift(dX, dY, dZ);
 				
 				beacons.add(shifted);
+				otherBeaconMap.scanner.set(dX, dY, dZ);
 			}
 			
 			return true;
