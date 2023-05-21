@@ -1,100 +1,66 @@
 package nl.jrwer.challenge.advent.day19;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BeaconMap {
-	// https://euclideanspace.com/maths/discrete/groups/categorise/finite/cube/index.htm
-	static final char[][] ORIENTATIONS = new char[][] { { 'x' }, { 'y' }, { 'x', 'x' }, { 'x', 'y' }, { 'y', 'x' },
-			{ 'y', 'y' }, { 'x', 'x', 'x' }, { 'x', 'x', 'y' }, { 'x', 'y', 'x' }, { 'x', 'y', 'y' }, { 'y', 'x', 'x' },
-			{ 'y', 'y', 'x' }, { 'y', 'y', 'y' }, { 'x', 'x', 'x', 'y' }, { 'x', 'x', 'y', 'x' },
-			{ 'x', 'x', 'y', 'y' }, { 'x', 'y', 'x', 'x' }, { 'x', 'y', 'y', 'y' }, { 'y', 'x', 'x', 'x' },
-			{ 'y', 'y', 'y', 'x' }, { 'x', 'x', 'x', 'y', 'x' }, { 'x', 'y', 'x', 'x', 'x' },
-			{ 'x', 'y', 'y', 'y', 'x' }, };
-
 	static final int SIZE = 2000;
-	final boolean[][][] map = new boolean[SIZE][SIZE][SIZE];
-	final List<Beacon> beacons;
+	final Scanner scanner;
+	final Set<Beacon> beacons = new HashSet<>();
 
-	public BeaconMap(List<Beacon> beacons) {
-		this.beacons = beacons;
-		this.createMap();
+	public BeaconMap(Scanner scanner) {
+		this.scanner = scanner;
+		
+		for(Beacon b : scanner.beacons)
+			beacons.add(b);
 	}
 
-	private void createMap() {
-		for (Beacon b : beacons)
-			map[b.x][b.y][b.z] = true;
-	}
-
-	public void combine(BeaconMap other) {
-		compare(other);
-	}
-	
-	private void compare(BeaconMap other) {
-		for(char[] orientation : ORIENTATIONS) {
-			boolean[][][] rotatedMap = rotate(map, orientation);
+	public boolean combine(BeaconMap other) {
+		System.out.println("Comparing: " + scanner.id + " with: " + other.scanner.id);
+		
+		for(Rotation r : Rotation.ROTATIONS) {
+			Set<Beacon> rotated = r.rotate(other.beacons);
 			
-			if(overlay(other, rotatedMap)) {
-				// TODO adjust full map
-			}
-			
+			if(compare(rotated))
+				return true;
 		}
-	}
-	
-	private boolean overlay(BeaconMap other, final boolean[][][] rotatedMap) {
-		// TODO compare maps
 		
 		return false;
 	}
 	
-	private boolean[][][] rotate(boolean[][][] map, char[] rotations) {
-		for(char r : rotations)
-			map = rotate(map, r);
+	private boolean compare(Set<Beacon> others) {
+		for(Beacon current : beacons)
+			for(Beacon other : others)
+				if(compare(current, other, others))
+					return true;
 		
-		return map;
+		return false;
 	}
 	
-	private boolean[][][] rotate(boolean[][][] map, char r) {
-		if(r == 'x')
-			return rotateX(map);
-		else if(r == 'y')
-			return rotateY(map);
-		else if((r == 'z'))
-			return rotateZ(map);
+	private boolean compare(Beacon current, Beacon other, Set<Beacon> others) {
+		int overlapping = 0;
+		int dX = current.x - other.x;
+		int dY = current.y - other.y;
+		int dZ = current.z - other.z;
+		
+		for(Beacon b : others) {
+			Beacon shifted = b.shift(dX, dY, dZ);
+			
+			if(this.beacons.contains(shifted))
+				overlapping++;
+		}
+		
+		// when 12 or more are overlapping, add all
+		if(overlapping >= 12) {
+			for(Beacon b : others) {
+				Beacon shifted = b.shift(dX, dY, dZ);
+				
+				beacons.add(shifted);
+			}
+			
+			return true;
+		}
 
-		throw new RuntimeException("Unsupported character: " + r);
+		return false;
 	}
-
-	
-	private boolean[][][] rotateX(boolean[][][] orgMap) {
-        boolean[][][] rotatedMap = new boolean[SIZE][SIZE][SIZE];
-        
-        for (int i = 0; i < SIZE; i++)
-            for (int j = 0; j < SIZE; j++)
-                for (int k = 0; k < SIZE; k++)
-                    rotatedMap[i][j][k] = orgMap[i][k][j];
-        
-        return rotatedMap;
-    }
-    
-    private boolean[][][] rotateY(boolean[][][] orgMap) {
-        boolean[][][] rotatedMap = new boolean[SIZE][SIZE][SIZE];
-
-        for (int i = 0; i < SIZE; i++)
-            for (int j = 0; j < SIZE; j++)
-                for (int k = 0; k < SIZE; k++)
-                	rotatedMap[i][j][k] = orgMap[j][i][k];
-
-        return rotatedMap;
-    }
-    
-    private boolean[][][] rotateZ(boolean[][][] orgMap) {
-        boolean[][][] rotatedMap = new boolean[SIZE][SIZE][SIZE];
-
-        for (int i = 0; i < SIZE; i++)
-            for (int j = 0; j < SIZE; j++)
-                for (int k = 0; k < SIZE; k++)
-                	rotatedMap[k][j][i] = orgMap[j][k][i];
-
-        return rotatedMap;
-    }    
 }

@@ -6,4 +6,7 @@ public class Beacon extends Coord{
 		super(x, y, z);
 	}
 
+	public Beacon shift(int x, int y, int z) {
+		return new Beacon(this.x + x, this.y + y, this.z + z);
+	}
 }
