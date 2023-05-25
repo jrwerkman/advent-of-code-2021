@@ -6,7 +6,7 @@ public class Player {
 	
 	int score = 0;
 	int currentPosition;
-	boolean wins = false;
+	long wins = 0;
 	
 	public Player(int id, int startingPosition) {
 		this.id = id;

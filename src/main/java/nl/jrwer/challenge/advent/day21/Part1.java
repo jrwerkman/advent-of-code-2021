@@ -13,7 +13,7 @@ public class Part1 {
 	public void start() {
 		long start = System.currentTimeMillis();
 		
-		GameBoard board = new GameBoard();
+		DeterministicGameBoard board = new DeterministicGameBoard(10, 1000, new DeterministicDice(100));
 		// test players
 //		board.addPlayer(new Player(1, 4));
 //		board.addPlayer(new Player(2, 8));
