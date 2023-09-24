@@ -1,36 +1,34 @@
 package nl.jrwer.challenge.advent.day22;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ProcedureArea extends Cuboid {
 	final boolean[][][] cubes;
-	final int width, height, depth;
+	final List<RebootStep> steps;
 	
-	int cubesOn = 0;
+	int cubesOnRebootRegion = 0;
+	long cubesOn = 0L;
 	
-	public ProcedureArea(Coord c1, Coord c2) {
+	public ProcedureArea(List<RebootStep> steps, Coord c1, Coord c2) {
 		super(c1, c2);
 
-		this.width = (c2.x - c1.x) + 1;
-		this.height = (c2.y - c1.y) + 1;
-		this.depth = (c2.z - c1.z) + 1;
-		
-		System.out.println(width + ", " + height + ", " + depth);
-		
+		this.steps = steps;
 		this.cubes = new boolean[width][height][depth];
 	}
 	
-	public int executeReboot(List<RebootStep> steps) {
+	public int executeReboot() {
 		for(RebootStep step : steps)
 			executeReboot(step);
 		
-		return cubesOn;
+		return cubesOnRebootRegion;
 	}
 
 	public void executeReboot(RebootStep step) {
-		for(int x=c1.x; x<=c2.x; x++)
-			for(int y=c1.y; y<=c2.y; y++)
-				for(int z=c1.z; z<=c2.z; z++)
+		for(int x=a.x; x<=b.x; x++)
+			for(int y=a.y; y<=b.y; y++)
+				for(int z=a.z; z<=b.z; z++)
 					set(x, y, z, step);
 	}
 	
@@ -38,19 +36,42 @@ public class ProcedureArea extends Cuboid {
 		boolean on = step.on;
 		
 		if(inArea(x, y, z, step)) {
-			boolean current = cubes[x - c1.x][y - c1.y][z - c1.z]; 
-			cubes[x - c1.x][y - c1.y][z - c1.z] = on;
+			boolean current = cubes[x - a.x][y - a.y][z - a.z]; 
+			cubes[x - a.x][y - a.y][z - a.z] = on;
 			
 			if(current != on)
-				cubesOn += (on ? 1 : -1);
+				cubesOnRebootRegion += (on ? 1 : -1);
 		}
 	}
 
 	private boolean inArea(int x, int y, int z, RebootStep step) {
 		Cuboid c = step.cuboid;
 		
-		return x >= c.c1.x && x <= c.c2.x 
-				&& y >= c.c1.y && y <= c.c2.y 
-				&& z >= c.c1.z && z <= c.c2.z;
-	}	
+		return x >= c.a.x && x <= c.b.x 
+				&& y >= c.a.y && y <= c.b.y 
+				&& z >= c.a.z && z <= c.b.z;
+	}
+	
+	Set<Cuboid> overlapOn = new HashSet<Cuboid>();
+	Set<Cuboid> overlapOff = new HashSet<Cuboid>();
+	
+	public long executeCompleteReboot() {
+		for(RebootStep step : steps) {
+			if(step.on)
+				addOn(step);
+			
+			break;
+		}
+		
+		return cubesOn;
+	}
+	
+	private void addOn(RebootStep step) {
+		for(RebootStep other : steps) {
+			Cuboid overlap = step.cuboid.overlapArea(other.cuboid);
+			
+			if(overlap != null)
+				overlapOn.add(overlap);
+		}
+	}
 }

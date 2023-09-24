@@ -3,12 +3,18 @@ package nl.jrwer.challenge.advent.day22;
 import java.util.Objects;
 
 public class Coord {
-	int x, y, z;
+	final int x, y, z;
 	
 	public Coord(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	
+	public Coord(Coord copy) {
+		this.x = copy.x;
+		this.y = copy.y;
+		this.z = copy.z;
 	}
 	
 	@Override
