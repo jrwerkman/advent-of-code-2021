@@ -13,14 +13,12 @@ public class Part2 {
 	}
 	
 	public void start() {
-		List<RebootStep> steps = new InputLoader("input-day-22-example2.txt").getInput();
+		List<RebootStep> steps = new InputLoader("input-day-22.txt").getInput();
 
 		long start = System.currentTimeMillis();
 		
-		ProcedureArea pa = new ProcedureArea(steps,
-				new Coord(-50,-50,-50), new Coord(50, 50, 50));
+		ProcedureArea pa = new ProcedureArea(steps);
 		System.out.println(pa.executeCompleteReboot());
-		System.out.println("2758514936282235");
 		
 		long end = System.currentTimeMillis();
 

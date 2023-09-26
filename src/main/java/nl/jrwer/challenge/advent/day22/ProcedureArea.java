@@ -1,21 +1,23 @@
 package nl.jrwer.challenge.advent.day22;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class ProcedureArea extends Cuboid {
 	final boolean[][][] cubes;
 	final List<RebootStep> steps;
 	
 	int cubesOnRebootRegion = 0;
-	long cubesOn = 0L;
 	
 	public ProcedureArea(List<RebootStep> steps, Coord c1, Coord c2) {
 		super(c1, c2);
 
 		this.steps = steps;
 		this.cubes = new boolean[width][height][depth];
+	}
+	
+	public ProcedureArea(List<RebootStep> steps) {
+		this(steps, new Coord(0, 0, 0), new Coord(0, 0, 0));
 	}
 	
 	public int executeReboot() {
@@ -52,26 +54,55 @@ public class ProcedureArea extends Cuboid {
 				&& z >= c.a.z && z <= c.b.z;
 	}
 	
-	Set<Cuboid> overlapOn = new HashSet<Cuboid>();
-	Set<Cuboid> overlapOff = new HashSet<Cuboid>();
+	List<CuboidState> core = new ArrayList<>();
 	
 	public long executeCompleteReboot() {
 		for(RebootStep step : steps) {
-			if(step.on)
-				addOn(step);
+			Cuboid current = step.cuboid;
 			
-			break;
-		}
+			// create a temp list, for update to add later
+			List<CuboidState> processing = new ArrayList<>();
+
+			// if the step turns on cubes, add it, if it turns cubes off, 
+			// only the intersects will be added 
+			if(step.on)
+				processing.add(new CuboidState(current, true));
+			
+			// check intersect with processed cuboids 
+			for(CuboidState entry : core) {
+				Cuboid intersect = current.intersect(entry.cuboid);
+				
+				// if there is an intersect, add the intersect, but set the state
+				// opposite of the current comparing processed entry from the core.
+				if(intersect != null)
+					processing.add(new CuboidState(intersect, !entry.state));
+			}
+			
+			// Add the new processed entry to the core
+			core.addAll(processing);
+		} 
 		
-		return cubesOn;
+		// calculate the cubes that are turned on.
+		long result = 0L;
+		
+		for(CuboidState state : core)
+			result += state.getCubes();
+		
+		return result;
 	}
 	
-	private void addOn(RebootStep step) {
-		for(RebootStep other : steps) {
-			Cuboid overlap = step.cuboid.overlapArea(other.cuboid);
-			
-			if(overlap != null)
-				overlapOn.add(overlap);
+	class CuboidState {
+		Cuboid cuboid;
+		Boolean state;
+		
+		public CuboidState(Cuboid cuboid, Boolean state) {
+			this.cuboid = cuboid;
+			this.state = state;
 		}
+		
+		public long getCubes() {
+			return cuboid.size * (state ? 1 : -1);
+		}
+		
 	}
 }
